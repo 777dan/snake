@@ -1,6 +1,7 @@
 // Настройка элемента холста canvas
 const canvas = document.getElementById("canvas");
 const colors = ["Red", "Orange", "Yellow", "Green", "Blue", "Purple"];
+const word = "Ananas";
 
 class Block {
   constructor(canvas, col = 0, row = 0, blockSize = 10, colors = ["Blue"]) {
@@ -9,6 +10,7 @@ class Block {
     this.row = row;
     this.colors = colors;
     this.blockSize = blockSize;
+    this.letter = word[0];
   }
   drawSquare = function (color = "blue") {
     let x = this.col * this.blockSize;
@@ -17,11 +19,14 @@ class Block {
     this.context.fillRect(x, y, this.blockSize, this.blockSize);
   };
 
-  drawCircle = function (color = "LimeGreen") {
+  drawCircle = function (color = "LimeGreen", letter) {
     let centerX = this.col * this.blockSize + this.blockSize / 2;
     let centerY = this.row * this.blockSize + this.blockSize / 2;
     this.context.fillStyle = color;
     this.circle(centerX, centerY, this.blockSize / 2, true);
+    this.context.font = "10px Courier";
+    this.context.fillStyle = "Black";
+    this.context.fillText(letter, this.col * this.blockSize + this.blockSize / 4, this.row * this.blockSize + this.blockSize / 12);
   };
 
   circle = function (x, y, radius, fillCircle) {
@@ -44,10 +49,11 @@ class Apple {
     this.block = new Block(canvas, 20, 20);
     this.color = colors[Math.floor(Math.random() * colors.length)];
     this.canvas = canvas;
+    this.letter = word[0];
   }
 
   draw = function () {
-    this.block.drawCircle(this.color);
+    this.block.drawCircle(this.color, this.letter);
   };
 
   move = function () {
@@ -101,6 +107,7 @@ class Snake {
 
     if (newHead.equal(apple.block)) {
       game.score++;
+      apple.letter = word[game.score];
       this.color = apple.color;
       apple.color = colors[Math.floor(Math.random() * colors.length)];
       apple.move();
