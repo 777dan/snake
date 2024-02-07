@@ -42,12 +42,12 @@ class Block {
 class Apple {
   constructor(canvas) {
     this.block = new Block(canvas, 20, 20);
-    this.color = "LimeGreen";
+    this.color = colors[Math.floor(Math.random() * colors.length)];
     this.canvas = canvas;
   }
 
   draw = function () {
-    this.block.drawCircle("LimeGreen");
+    this.block.drawCircle(this.color);
   };
 
   move = function () {
@@ -101,6 +101,8 @@ class Snake {
 
     if (newHead.equal(apple.block)) {
       game.score++;
+      this.color = apple.color;
+      apple.color = colors[Math.floor(Math.random() * colors.length)];
       apple.move();
     } else {
       this.segments.pop();
