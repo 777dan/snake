@@ -12,11 +12,16 @@ class Block {
         this.blockSize = blockSize;
         this.letter = word[0];
     }
-    drawSquare = function (color = "blue") {
+    drawSquare = function (color = "blue", letterNum) {
         let x = this.col * this.blockSize;
         let y = this.row * this.blockSize;
         this.context.fillStyle = color;
         this.context.fillRect(x, y, this.blockSize, this.blockSize);
+        if (letterNum > 0) {
+            this.context.font = "12px Courier";
+            this.context.fillStyle = "White";
+            this.context.fillText(word[letterNum - 1], this.col * this.blockSize + this.blockSize / 9, this.row * this.blockSize + this.blockSize / 12);
+        }
     };
 
     drawCircle = function (color = "LimeGreen", letter) {
@@ -57,6 +62,8 @@ class Apple {
     };
 
     move = function () {
+        let hitAudio = new Audio('./sounds/hit.mp3');
+        hitAudio.play();
         const widthInBlocks = this.canvas.width / this.block.blockSize;
         const heightInBlocks = this.canvas.height / this.block.blockSize;
         let randomCol = Math.floor(Math.random() * (widthInBlocks - 2)) + 1;
@@ -69,8 +76,8 @@ class Snake {
     constructor(canvas) {
         this.segments = [
             new Block(canvas, 7, 5),
-            new Block(canvas, 6, 5),
-            new Block(canvas, 5, 5),
+            // new Block(canvas, 6, 5),
+            // new Block(canvas, 5, 5),
         ];
         this.direction = "right";
         this.nextDirection = "right";
@@ -80,7 +87,7 @@ class Snake {
 
     draw = function () {
         for (let i = 0; i < this.segments.length; i++) {
-            this.segments[i].drawSquare(this.color);
+            this.segments[i].drawSquare(this.color, i);
         }
     };
 
@@ -182,13 +189,14 @@ class Game {
         );
     };
 
-    drawScore = function (blockSize = 10) {
+    drawInfo = function (blockSize = 10) {
         this.context.font = "20px Courier";
         this.context.fillStyle = "Black";
         this.context.textAlign = "left";
         this.context.textBaseline = "top";
-        this.context.fillText("Рахунок: " + this.score, blockSize, blockSize + 20);
-        this.context.fillText("Слово: " + word.slice(0, this.score), blockSize, blockSize);
+        this.context.fillText("Score: " + this.score, blockSize, blockSize + 20);
+        this.context.fillText("Word: " + word.slice(0, this.score), blockSize, blockSize);
+        this.context.fillText("Left " + (word.length - this.score) + " letters", blockSize, blockSize + 40);
         if (this.score >= word.length) {
             this.victory();
         }
@@ -196,14 +204,16 @@ class Game {
 
     gameOver = function (blockSize = 10) {
         clearInterval(this.intervalId);
-        this.context.fillText("Слово: " + word, blockSize, blockSize);
+        let gameOverAudio = new Audio('./sounds/game-over.mp3');
+        gameOverAudio.play();
+        this.context.fillText("Word: " + word, blockSize, blockSize);
         this.context.font = "60px Courier";
         this.context.fillStyle = "Black";
         this.context.textAlign = "center";
         this.context.textBaseline = "middle";
         this.apple.letter = "";
         this.context.fillText(
-            "Кінець гри",
+            "Game over",
             this.canvas.width / 2,
             this.canvas.height / 2
         );
@@ -211,6 +221,8 @@ class Game {
 
     victory = function () {
         clearInterval(this.intervalId);
+        let victoryAudio = new Audio('./sounds/victory.mp3');
+        victoryAudio.play();
         this.context.font = "60px Courier";
         this.context.fillStyle = "Green";
         this.context.textAlign = "center";
@@ -225,7 +237,7 @@ class Game {
 
     go() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.drawScore();
+        this.drawInfo();
         this.snake.move(this.apple, this);
         this.snake.draw();
         this.apple.draw();
@@ -256,7 +268,7 @@ class Game {
 
 // let intervalId = setInterval(function () {
 //   context.clearRect(0, 0, canvas.width, canvas.height);
-//   // drawScore();
+//   // drawInfo();
 //   snake.move(apple);
 //   snake.draw();
 //   apple.draw();
@@ -267,4 +279,4 @@ const game = new Game(canvas);
 game.start();
 // game.drawBorder();
 // game.gameOver();
-// game.drawScore();
+// game.drawInfo();
