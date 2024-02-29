@@ -1,5 +1,5 @@
 const canvas = document.getElementById("canvas");
-const colors = ["Red", "Orange", "Yellow", "Green", "Blue", "Purple"];
+const colors = ["#333333", "#333333", "#006400", "#8B0000", "#FF8C00", "#FF69B4", '#8A2BE2', '#8B4513', ''];
 const words = ["orange", "house", "capibility"];
 const word = words[Math.floor(Math.random() * words.length)];
 
@@ -20,7 +20,9 @@ class Block {
         if (letterNum > 0) {
             this.context.font = "12px Courier";
             this.context.fillStyle = "White";
-            this.context.fillText(word[letterNum - 1], this.col * this.blockSize + this.blockSize / 9, this.row * this.blockSize + this.blockSize / 12);
+            this.context.textAlign = "center";
+            this.context.textBaseline = "middle";
+            this.context.fillText(word[letterNum - 1], (this.col * this.blockSize) + this.blockSize / 2, (this.row * this.blockSize) + this.blockSize / 2);
         }
     };
 
@@ -30,8 +32,10 @@ class Block {
         this.context.fillStyle = color;
         this.circle(centerX, centerY, this.blockSize / 2, true);
         this.context.font = "10px Courier";
-        this.context.fillStyle = "Black";
-        this.context.fillText(letter, this.col * this.blockSize + this.blockSize / 4, this.row * this.blockSize + this.blockSize / 12);
+        this.context.fillStyle = "White";
+        this.context.textAlign = "center";
+        this.context.textBaseline = "middle";
+        this.context.fillText(letter, (this.col * this.blockSize) + this.blockSize / 2, (this.row * this.blockSize) + this.blockSize / 2);
     };
 
     circle = function (x, y, radius, fillCircle) {
@@ -107,7 +111,7 @@ class Snake {
 
         if (this.checkCollision(newHead)) {
             game.gameOver();
-            // alert("game Over!");
+
             return;
         }
         this.segments.unshift(newHead);
@@ -255,28 +259,5 @@ class Game {
     }
 }
 
-// let apple = new Apple(canvas);
-// this.context = canvas.getContext("2d");
-// addEventListener("keydown", function (event) {
-//   let newDirection = directions[event.keyCode];
-//   if (newDirection !== undefined) {
-//     snake.setDirection(newDirection);
-//   }
-// });
-
-// const snake = new Snake(canvas);
-
-// let intervalId = setInterval(function () {
-//   context.clearRect(0, 0, canvas.width, canvas.height);
-//   // drawInfo();
-//   snake.move(apple);
-//   snake.draw();
-//   apple.draw();
-//   // drawBorder();
-// }, 100);
-
 const game = new Game(canvas);
 game.start();
-// game.drawBorder();
-// game.gameOver();
-// game.drawInfo();
